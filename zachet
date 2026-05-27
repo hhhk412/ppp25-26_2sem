@@ -1,0 +1,64 @@
+import random
+
+# Конфигурация уровней сложности
+DIFFICULTY_LEVELS = {
+    '1': {'range': 50, 'attempts': 10, 'name': 'Легкий (1-50)'},
+    '2': {'range': 100, 'attempts': 7, 'name': 'Средний (1-100)'},
+    '3': {'range': 500, 'attempts': 5, 'name': 'Сложный (1-500)'}
+}
+
+def get_valid_int(prompt):
+    """Функция для безопасного ввода чисел (обрабатывает ошибки)"""
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print("Ошибка: Пожалуйста, введите целое число.")
+
+def play_game():
+    """Основной цикл игры"""
+    print("\n--- Добро пожаловать в игру 'Угадай число' ---")
+    
+    # 1. Выбор уровня сложности
+    print("Выберите уровень сложности:")
+    for key, level in DIFFICULTY_LEVELS.items():
+        print(f"{key}. {level['name']} (попыток: {level['attempts']})")
+    
+    choice = input("Введите номер уровня: ")
+    while choice not in DIFFICULTY_LEVELS:
+        choice = input("Неверный выбор. Введите 1, 2 или 3: ")
+    
+    settings = DIFFICULTY_LEVELS[choice]
+    max_range = settings['range']
+    attempts = settings['attempts']
+    secret_number = random.randint(1, max_range)
+    
+    print(f"\nЗагадано число от 1 до {max_range}. У вас есть {attempts} попыток.")
+
+    # 2. Игровой цикл
+    for i in range(1, attempts + 1):
+        guess = get_valid_int(f"Попытка {i}/{attempts}. Введите ваше число: ")
+        
+        if guess == secret_number:
+            print(f"Поздравляем! Вы угадали число {secret_number} за {i} попыток!")
+            return True
+        elif guess < secret_number:
+            print("Загаданное число больше.")
+        else:
+            print("Загаданное число меньше.")
+    
+    # 3. Конец игры
+    print(f"\nК сожалению, попытки закончились. Было загадано число {secret_number}.")
+    return False
+
+def main():
+    """Главный цикл приложения (возможность перезапуска)"""
+    while True:
+        play_game()
+        answer = input("\nХотите сыграть еще раз? (да/нет): ").lower()
+        if answer != 'да':
+            print("Спасибо за игру! До свидания.")
+            break
+
+if __name__ == "__main__":
+    main()
